@@ -679,5 +679,85 @@ window.addEventListener("resize",updateReviews);
 updateReviews();
 
 </script>
+
+  
+<!-- EmailJS Library -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+<script>
+  // Initialize EmailJS
+  emailjs.init({
+    publicKey: "IU9Z2wwcMCQB2-wj2"
+  });
+
+  // Contact Form Submission
+  document.getElementById("contactForm").addEventListener("submit", function(e) {
+
+    e.preventDefault();
+
+    const form = this;
+    const btn = form.querySelector('button[type="submit"]');
+    const success = document.getElementById("formSuccess");
+
+    // Check required fields
+    const name = document.getElementById("cName").value.trim();
+    const email = document.getElementById("cEmail").value.trim();
+
+    if (!name || !email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      alert("Please enter your name and a valid email address.");
+      return;
+    }
+
+    // Prepare email data
+    const templateParams = {
+      name: name,
+      email: email,
+      phone: document.getElementById("cPhone").value,
+      travelers: document.getElementById("cTravelers").value,
+      destination: document.getElementById("cDest").value,
+      travel_date: document.getElementById("cDate").value,
+      message: document.getElementById("cMsg").value
+    };
+
+    // Show loading
+    btn.disabled = true;
+    btn.innerHTML = "Sending Enquiry...";
+
+    success.style.display = "none";
+
+    // Send email using EmailJS
+    emailjs.send(
+      "service_9gx1d2m",
+      "template_bxwiela",
+      templateParams
+    )
+    .then(function(response) {
+
+      console.log("Email sent successfully!", response.status);
+
+      success.innerHTML =
+        '<i class="bi bi-check-circle-fill"></i> Thank you! Your enquiry has been sent successfully. We will contact you soon.';
+
+      success.style.display = "block";
+
+      form.reset();
+
+    })
+    .catch(function(error) {
+
+      console.error("Email sending failed:", error);
+
+      alert("Sorry! Your enquiry could not be sent. Please try again.");
+
+    })
+    .finally(function() {
+
+      btn.disabled = false;
+      btn.innerHTML = 'Send Enquiry <i class="bi bi-send"></i>';
+
+    });
+
+  });
+</script>
 </body>
 </html>
